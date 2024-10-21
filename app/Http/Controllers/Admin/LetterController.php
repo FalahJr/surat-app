@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Models\Letter;
 use App\Models\Sender;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,7 +26,7 @@ class LetterController extends Controller
         $departments = Department::all();
         $senders = Sender::all();
 
-        return view('pages.admin.letter.create',[
+        return view('pages.admin.letter.create', [
             'departments' => $departments,
             'senders' => $senders,
         ]);
@@ -44,8 +45,8 @@ class LetterController extends Controller
             'letter_type' => 'required',
         ]);
 
-        if($request->file('letter_file')){
-            $validatedData['letter_file'] = $request->file('letter_file')->store('assets/letter-file');
+        if ($request->file('letter_file')) {
+            $validatedData['letter_file'] = $request->file('letter_file')->store('public/assets/letter-file');
         }
 
         if ($validatedData['letter_type'] == 'Surat Masuk') {
@@ -54,28 +55,42 @@ class LetterController extends Controller
             $redirect = 'surat-keluar';
         }
 
+        $validatedData['status'] = 'diproses';
+
         Letter::create($validatedData);
 
         return redirect()
-                    ->route($redirect)
-                    ->with('success', 'Sukses! 1 Data Berhasil Disimpan');
+            ->route($redirect)
+            ->with('success', 'Sukses! 1 Data Berhasil Disimpan');
     }
 
     public function incoming_mail()
     {
         if (request()->ajax()) {
-            $query = Letter::with(['department','sender'])->where('letter_type', 'Surat Masuk')->latest()->get();
+            $query = Letter::with(['department', 'sender'])->where('letter_type', 'Surat Masuk')->where('status', 'diproses')->latest()->get();
+
 
             return Datatables::of($query)
                 ->addColumn('action', function ($item) {
+                    $rolePrefix = [
+                        'admin' => 'admin',
+                        'guru' => 'guru',
+                        'staff' => 'staff',
+                        'kepala sekolah' => 'kepala-sekolah'
+                    ];
+
+                    $prefix = $rolePrefix[Session('user')['role']] ?? 'default'; // default jika role tidak dikenali
+
                     return '
-                        <a class="btn btn-success btn-xs" href="' . route('detail-surat', $item->id) . '">
-                            <i class="fa fa-search-plus"></i> &nbsp; Detail
-                        </a>
+                       
+
+<a class="btn btn-success btn-xs" href="' . url($prefix . '/letter/surat', $item->id) . ' ">
+    <i class="fa fa-search-plus"></i> &nbsp; Detail
+</a>
                         <a class="btn btn-primary btn-xs" href="' . route('letter.edit', $item->id) . '">
                             <i class="fas fa-edit"></i> &nbsp; Ubah
                         </a>
-                        <form action="' . route('letter.destroy', $item->id) . '" method="POST" onsubmit="return confirm('."'Anda akan menghapus item ini dari situs anda?'".')">
+                        <form action="' . route('letter.destroy', $item->id) . '" method="POST" onsubmit="return confirm(' . "'Anda akan menghapus item ini dari situs anda?'" . ')">
                             ' . method_field('delete') . csrf_field() . '
                             <button class="btn btn-danger btn-xs">
                                 <i class="far fa-trash-alt"></i> &nbsp; Hapus
@@ -84,11 +99,11 @@ class LetterController extends Controller
                     ';
                 })
                 ->editColumn('post_status', function ($item) {
-                   return $item->post_status == 'Published' ? '<div class="badge bg-green-soft text-green">'.$item->post_status.'</div>':'<div class="badge bg-gray-200 text-dark">'.$item->post_status.'</div>';
+                    return $item->post_status == 'Published' ? '<div class="badge bg-green-soft text-green">' . $item->post_status . '</div>' : '<div class="badge bg-gray-200 text-dark">' . $item->post_status . '</div>';
                 })
                 ->addIndexColumn()
                 ->removeColumn('id')
-                ->rawColumns(['action','post_status'])
+                ->rawColumns(['action', 'post_status'])
                 ->make();
         }
 
@@ -98,18 +113,18 @@ class LetterController extends Controller
     public function outgoing_mail()
     {
         if (request()->ajax()) {
-            $query = Letter::with(['department','sender'])->where('letter_type', 'Surat Keluar')->latest()->get();
+            $query = Letter::with(['department', 'sender'])->where('letter_type', 'Surat Keluar')->latest()->get();
 
             return Datatables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
-                        <a class="btn btn-success btn-xs" href="' . route('detail-surat', $item->id) . '">
+                        <a class="btn btn-success btn-xs" href="' . route('surat-detail', $item->id) . '">
                             <i class="fa fa-search-plus"></i> &nbsp; Detail
                         </a>
                         <a class="btn btn-primary btn-xs" href="' . route('letter.edit', $item->id) . '">
                             <i class="fas fa-edit"></i> &nbsp; Ubah
                         </a>
-                        <form action="' . route('letter.destroy', $item->id) . '" method="POST" onsubmit="return confirm('."'Anda akan menghapus item ini dari situs anda?'".')">
+                        <form action="' . route('letter.destroy', $item->id) . '" method="POST" onsubmit="return confirm(' . "'Anda akan menghapus item ini dari situs anda?'" . ')">
                             ' . method_field('delete') . csrf_field() . '
                             <button class="btn btn-danger btn-xs">
                                 <i class="far fa-trash-alt"></i> &nbsp; Hapus
@@ -118,11 +133,11 @@ class LetterController extends Controller
                     ';
                 })
                 ->editColumn('post_status', function ($item) {
-                   return $item->post_status == 'Published' ? '<div class="badge bg-green-soft text-green">'.$item->post_status.'</div>':'<div class="badge bg-gray-200 text-dark">'.$item->post_status.'</div>';
+                    return $item->post_status == 'Published' ? '<div class="badge bg-green-soft text-green">' . $item->post_status . '</div>' : '<div class="badge bg-gray-200 text-dark">' . $item->post_status . '</div>';
                 })
                 ->addIndexColumn()
                 ->removeColumn('id')
-                ->rawColumns(['action','post_status'])
+                ->rawColumns(['action', 'post_status'])
                 ->make();
         }
 
@@ -131,9 +146,10 @@ class LetterController extends Controller
 
     public function show($id)
     {
-        $item = Letter::with(['department','sender'])->findOrFail($id);
+        // dd($id);
+        $item = Letter::with(['department', 'sender'])->findOrFail($id);
 
-        return view('pages.admin.letter.show',[
+        return view('pages.admin.letter.show', [
             'item' => $item,
         ]);
     }
@@ -145,7 +161,7 @@ class LetterController extends Controller
         $departments = Department::all();
         $senders = Sender::all();
 
-        return view('pages.admin.letter.edit',[
+        return view('pages.admin.letter.edit', [
             'departments' => $departments,
             'senders' => $senders,
             'item' => $item,
@@ -174,8 +190,8 @@ class LetterController extends Controller
 
         $item = Letter::findOrFail($id);
 
-        if($request->file('letter_file')){
-            $validatedData['letter_file'] = $request->file('letter_file')->store('assets/letter-file');
+        if ($request->file('letter_file')) {
+            $validatedData['letter_file'] = $request->file('letter_file')->store('public/assets/letter-file');
         }
 
         if ($validatedData['letter_type'] == 'Surat Masuk') {
@@ -187,10 +203,39 @@ class LetterController extends Controller
         $item->update($validatedData);
 
         return redirect()
-                    ->route($redirect)
-                    ->with('success', 'Sukses! 1 Data Berhasil Diubah');
+            ->route($redirect)
+            ->with('success', 'Sukses! 1 Data Berhasil Diubah');
     }
 
+    public function approve(Request $request, $id)
+    {
+
+
+
+        $item = Letter::findOrFail($id);
+
+        // dd($item);
+        $item->update(['status' => 'diterima']);
+
+
+        return redirect()->back()
+            ->with('success', 'Sukses! 1 Data Berhasil Diubah');
+    }
+
+    public function reject(Request $request, $id)
+    {
+
+
+
+        $item = Letter::findOrFail($id);
+
+        // dd($item);
+        $item->update(['status' => 'ditolak']);
+
+
+        return redirect()->back()
+            ->with('success', 'Sukses! 1 Data Berhasil Diubah');
+    }
     public function destroy($id)
     {
         $item = Letter::findorFail($id);
@@ -206,7 +251,7 @@ class LetterController extends Controller
         $item->delete();
 
         return redirect()
-                    ->route($redirect)
-                    ->with('success', 'Sukses! 1 Data Berhasil Dihapus');
+            ->route($redirect)
+            ->with('success', 'Sukses! 1 Data Berhasil Dihapus');
     }
 }

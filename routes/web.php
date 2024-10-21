@@ -51,8 +51,10 @@ Route::prefix('admin')
         Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail'])->name('surat-masuk');
         Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail'])->name('surat-keluar');
 
-        Route::get('letter/surat/{id}', [LetterController::class, 'show'])->name('detail-surat');
+        Route::get('letter/surat/{id}', [LetterController::class, 'show']);
         Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat');
+        Route::get('letter/surat/{id}/approve', [LetterController::class, 'approve'])->name('approve');
+        Route::get('letter/surat/{id}/reject', [LetterController::class, 'reject'])->name('reject');
 
         //print
         Route::get('print/surat-masuk', [PrintController::class, 'index'])->name('print-surat-masuk');
@@ -72,22 +74,22 @@ Route::prefix('kepala-sekolah')
     ->middleware('authKepsek')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
-        Route::resource('/department', DepartmentController::class);
+        // Route::resource('/department', DepartmentController::class);
         Route::resource('/sender', SenderController::class);
         // Route::resource('/letter', LetterController::class, [
         //     'except' => ['show']
         // ]);
-        Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail'])->name('surat-masuk');
-        Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail'])->name('surat-keluar');
+        Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
+        Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);
 
-        Route::get('letter/surat/{id}', [LetterController::class, 'show'])->name('detail-surat');
-        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat');
+        // Route::get('letter/surat/{id}', [LetterController::class, 'show']);
+        Route::get('letter/download/{id}', [LetterController::class, 'download_letter']);
 
         //print
-        Route::get('print/surat-masuk', [PrintController::class, 'index'])->name('print-surat-masuk');
+        Route::get('print/surat-masuk', [PrintController::class, 'index']);
         Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
 
-        Route::resource('user', UserController::class);
+        // Route::resource('user', UserController::class);
         Route::resource('setting', SettingController::class, [
             'except' => ['show']
         ]);

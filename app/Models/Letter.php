@@ -17,20 +17,20 @@ class Letter extends Model
         'department_id',
         'sender_id',
         'letter_file',
-        'letter_type'
-    ];
-
-    protected $hidden = [
+        'letter_type',
+        'status'
 
     ];
+
+    protected $hidden = [];
 
     public function department()
     {
-        return $this->belongsTo(Department::class, 'department_id','id');
+        return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 
     public function sender()
     {
-        return $this->belongsTo(Sender::class, 'sender_id','id');
+        return $this->belongsTo(Sender::class, 'sender_id', 'id');
     }
 }
