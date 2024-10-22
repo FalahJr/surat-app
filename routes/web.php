@@ -51,6 +51,9 @@ Route::prefix('admin')
         Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail'])->name('surat-masuk');
         Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail'])->name('surat-keluar');
 
+        Route::get('letter/arsip', [LetterController::class, 'arsip'])->name('arsip');
+
+
         Route::get('letter/surat/{id}', [LetterController::class, 'show']);
         Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat');
         Route::get('letter/surat/{id}/approve', [LetterController::class, 'approve'])->name('approve');

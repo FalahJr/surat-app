@@ -28,10 +28,14 @@
                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
                     Dashboard
                 </a>
-                <a class="nav-link {{ request()->is('admin/department*') ? 'active' : '' }}"
-                    href="{{ url('admin/department') }}}">
+                <a class="nav-link {{ request()->is('admin/department') ? 'active' : '' }}"
+                    href="{{ url('admin/department') }}">
                     <div class="nav-link-icon"><i data-feather="home"></i></div>
                     Data Departemen
+                </a>
+                <a class="nav-link {{ request()->is('admin/user*') ? 'active' : '' }}" href="{{ url('admin/user/') }}">
+                    <div class="nav-link-icon"><i data-feather="user"></i></div>
+                    Data User
                 </a>
                 <a class="nav-link {{ request()->is('admin/letter/create') ? 'active' : '' }}"
                     href="{{ url('admin/letter/create') }}">
@@ -48,11 +52,13 @@
                     <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
                     Surat Keluar
                 </a>
-                <a class="nav-link {{ request()->is('admin/user*') ? 'active' : '' }}"
-                    href="{{ url('admin/user/') }}">
-                    <div class="nav-link-icon"><i data-feather="user"></i></div>
-                    Data User
+
+                <a class="nav-link {{ request()->is('admin/letter/arsip') ? 'active' : '' }}"
+                    href="{{ url('admin/letter/arsip') }}">
+                    <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
+                    Arsip
                 </a>
+
                 {{-- <a class="nav-link {{ request()->is('admin/setting*') ? 'active' : '' }}"
                     href="{{ url('admin/setting/') }}">
                     <div class="nav-link-icon"><i data-feather="settings"></i></div>
@@ -110,7 +116,11 @@
                     Dashboard
                 </a>
 
-
+                <a class="nav-link {{ request()->is('kepala-sekolah/user*') ? 'active' : '' }}"
+                    href="{{ url('kepala-sekolah/user/') }}">
+                    <div class="nav-link-icon"><i data-feather="user"></i></div>
+                    Data User
+                </a>
                 <a class="nav-link {{ request()->is('kepala-sekolah/letter/surat-masuk') ? 'active' : '' }}"
                     href="{{ url('kepala-sekolah/letter/surat-masuk') }}">
                     <div class="nav-link-icon"><i data-feather="arrow-right"></i></div>
@@ -121,11 +131,7 @@
                     <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
                     Surat Keluar
                 </a>
-                <a class="nav-link {{ request()->is('kepala-sekolah/user*') ? 'active' : '' }}"
-                    href="{{ url('kepala-sekolah/user/') }}">
-                    <div class="nav-link-icon"><i data-feather="user"></i></div>
-                    Data User
-                </a>
+
 
                 {{-- <a class="nav-link {{ request()->is('kepala-sekolah/setting*') ? 'active' : '' }}"
                     href="{{ url('kepala-sekolah/setting/') }}">
