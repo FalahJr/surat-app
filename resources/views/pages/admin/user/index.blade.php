@@ -67,6 +67,7 @@
                                         <th width="10">No.</th>
                                         <th>Nama</th>
                                         <th>Email</th>
+                                        <th>NIP</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -101,6 +102,10 @@
                 {
                     data: 'email',
                     name: 'email'
+                },
+                {
+                    data: 'nip',
+                    name: 'nip'
                 },
                 {
                     data: 'action',

@@ -55,7 +55,7 @@ Route::prefix('admin')
 
 
         Route::get('letter/surat/{id}', [LetterController::class, 'show']);
-        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat');
+        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat-admin');
         Route::get('letter/surat/{id}/approve', [LetterController::class, 'approve'])->name('approve');
         Route::get('letter/surat/{id}/reject', [LetterController::class, 'reject'])->name('reject');
 
@@ -85,8 +85,8 @@ Route::prefix('kepala-sekolah')
         Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
         Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);
 
-        // Route::get('letter/surat/{id}', [LetterController::class, 'show']);
-        Route::get('letter/download/{id}', [LetterController::class, 'download_letter']);
+        Route::get('letter/surat/{id}', [LetterController::class, 'show']);
+        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat-kepsek');
 
         //print
         Route::get('print/surat-masuk', [PrintController::class, 'index']);

@@ -92,7 +92,8 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             File Surat -
-                            <a href="{{ route('download-surat', $item->id) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ Session('user')['role'] == 'admin' ? route('download-surat-admin', $item->id) : route('download-surat-kepsek', $item->id) }}"
+                                class="btn btn-sm btn-primary">
                                 <i class="fa fa-download" aria-hidden="true"></i> &nbsp; Download Surat
                             </a>
                         </div>
