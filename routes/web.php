@@ -72,16 +72,16 @@ Route::prefix('admin')
         Route::post('change-password', [SettingController::class, 'update_password'])->name('update.password');
     });
 
-//Admin
+//Kepala Sekolah
 Route::prefix('kepala-sekolah')
     ->middleware('authKepsek')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
         // Route::resource('/department', DepartmentController::class);
         Route::resource('/sender', SenderController::class);
-        // Route::resource('/letter', LetterController::class, [
-        //     'except' => ['show']
-        // ]);
+        Route::resource('/letter', LetterController::class, [
+            'except' => ['show']
+        ]);
         Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
         Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);
 
@@ -92,7 +92,67 @@ Route::prefix('kepala-sekolah')
         Route::get('print/surat-masuk', [PrintController::class, 'index']);
         Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
 
-        // Route::resource('user', UserController::class);
+        Route::resource('user', UserController::class);
+        Route::resource('setting', SettingController::class, [
+            'except' => ['show']
+        ]);
+        Route::get('setting/password', [SettingController::class, 'change_password'])->name('change-password');
+        Route::post('setting/upload-profile', [SettingController::class, 'upload_profile'])->name('profile-upload');
+        Route::post('change-password', [SettingController::class, 'update_password'])->name('update.password');
+    });
+
+
+//Guru
+Route::prefix('guru')
+    ->middleware('authGuru')
+    ->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
+        // Route::resource('/department', DepartmentController::class);
+        Route::resource('/sender', SenderController::class);
+        Route::resource('/letter', LetterController::class, [
+            'except' => ['show']
+        ]);
+        Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
+        Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);
+
+        Route::get('letter/surat/{id}', [LetterController::class, 'show']);
+        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat-guru');
+
+        //print
+        Route::get('print/surat-masuk', [PrintController::class, 'index']);
+        Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
+
+        Route::resource('user', UserController::class);
+        Route::resource('setting', SettingController::class, [
+            'except' => ['show']
+        ]);
+        Route::get('setting/password', [SettingController::class, 'change_password'])->name('change-password');
+        Route::post('setting/upload-profile', [SettingController::class, 'upload_profile'])->name('profile-upload');
+        Route::post('change-password', [SettingController::class, 'update_password'])->name('update.password');
+    });
+
+
+//Guru
+Route::prefix('staff')
+    ->middleware('authStaff')
+    ->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
+        // Route::resource('/department', DepartmentController::class);
+        Route::resource('/sender', SenderController::class);
+        Route::resource('/letter', LetterController::class, [
+            'except' => ['show']
+        ]);
+        Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
+        Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);
+
+        Route::get('letter/surat/{id}', [LetterController::class, 'show']);
+        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat-staff');
+
+        //print
+        Route::get('print/surat-masuk', [PrintController::class, 'index']);
+        Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
+
+        Route::resource('user', UserController::class);
         Route::resource('setting', SettingController::class, [
             'except' => ['show']
         ]);

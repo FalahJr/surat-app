@@ -21,8 +21,16 @@ class UserController extends Controller
 
             return Datatables::of($query)
                 ->addColumn('action', function ($item) {
+                    $rolePrefix = [
+                        'admin' => 'admin',
+                        'guru' => 'guru',
+                        'staff' => 'staff',
+                        'kepala sekolah' => 'kepala-sekolah'
+                    ];
+
+                    $prefix = $rolePrefix[Session('user')['role']] ?? 'default'; // default jika role tidak dikenali
                     return '
-                        <a class="btn btn-primary btn-xs" href="' . route('user.edit', $item->id) . '">
+                        <a class="btn btn-primary btn-xs" href="' .  url($prefix . '/user/' . $item->id . '/edit') .  '">
                             <i class="fas fa-edit"></i> &nbsp; Ubah
                         </a>
                         <form action="' . route('user.destroy', $item->id) . '" method="POST" onsubmit="return confirm(' . "'Anda akan menghapus item ini secara permanen dari situs anda?'" . ')">

@@ -92,11 +92,18 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             File Surat -
-                            <a href="{{ Session('user')['role'] == 'admin' ? route('download-surat-admin', $item->id) : route('download-surat-kepsek', $item->id) }}"
+                            <a href="{{ Session('user')['role'] == 'admin'
+                                ? route('download-surat-admin', $item->id)
+                                : (Session('user')['role'] == 'guru'
+                                    ? route('download-surat-guru', $item->id)
+                                    : (Session('user')['role'] == 'staff administrasi'
+                                        ? route('download-surat-staff', $item->id)
+                                        : route('download-surat-kepsek', $item->id))) }}"
                                 class="btn btn-sm btn-primary">
                                 <i class="fa fa-download" aria-hidden="true"></i> &nbsp; Download Surat
                             </a>
                         </div>
+
                         <div class="card-body">
                             <div class="mb-3 row">
                                 <embed src="{{ Storage::url($item->letter_file) }}" width="500" height="375"

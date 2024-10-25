@@ -135,6 +135,10 @@ class LoginController extends Controller
                     return redirect('kepala-sekolah/dashboard');
                     break;
 
+                case 'staff administrasi':
+                    return redirect('staff/dashboard');
+                    break;
+
                     // case 'Karyawan':
                     //     return redirect('/karyawan/home');
                     //     break;

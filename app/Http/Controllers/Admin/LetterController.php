@@ -75,11 +75,12 @@ class LetterController extends Controller
                     $rolePrefix = [
                         'admin' => 'admin',
                         'guru' => 'guru',
-                        'staff' => 'staff',
+                        'staff administrasi' => 'staff',
                         'kepala sekolah' => 'kepala-sekolah'
                     ];
 
                     $prefix = $rolePrefix[Session('user')['role']] ?? 'default'; // default jika role tidak dikenali
+                    // dd($prefix);
 
                     return '
                        
@@ -87,7 +88,8 @@ class LetterController extends Controller
 <a class="btn btn-success btn-xs" href="' . url($prefix . '/letter/surat', $item->id) . ' ">
     <i class="fa fa-search-plus"></i> &nbsp; Detail
 </a>
-                        <a class="btn btn-primary btn-xs" href="' . route('letter.edit', $item->id) . '">
+
+                        <a class="btn btn-primary btn-xs" href="' . url($prefix . '/letter/' . $item->id . '/edit') .  '">
                             <i class="fas fa-edit"></i> &nbsp; Ubah
                         </a>
                         <form action="' . route('letter.destroy', $item->id) . '" method="POST" onsubmit="return confirm(' . "'Anda akan menghapus item ini dari situs anda?'" . ')">
@@ -227,10 +229,10 @@ class LetterController extends Controller
     public function download_letter($id)
     {
         $item = Letter::findOrFail($id);
-        dd($item->letter_file);
+        // dd($item->letter_file);
         // dd(Storage::download('storage/' . $item->letter_file));
 
-        return Storage::download('storage/' . $item->letter_file);
+        return Storage::download($item->letter_file);
     }
 
     public function update(Request $request, $id)
